@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diário de Treino Alex</title>
+
+  <!-- Fonte Lato (tipografia principal da Icehot) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,300;1,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* =========================================
+       Identidade Visual Icehot — Manual v1.0
+       Cor principal: Azul Royal #0F05F1
+       Apoio: Azul-celeste #23CCF3, Azul-marinho #001E61,
+              Lilás #B150C5, Amarelo #FFDA27, Cinza #D7D2CB
+       Tipografia: Lato
+       ========================================= */
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      font-family: 'Lato', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #E8ECF6;
+      color: #001E61;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 720px;
+      background: #F4F6FB;
+      padding: 26px;
+      border-radius: 16px;
+      position: relative;
+      box-shadow: 0 2px 16px rgba(15, 5, 241, 0.06);
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(15, 5, 241, 0.12);
+    }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      object-fit: cover;
+      border: 2px solid #0F05F1;
+      background: #F4F6FB;
+      display: block;
+      flex-shrink: 0;
+    }
+    .avatar-fallback {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: #0F05F1;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+    .title-block { line-height: 1.15; }
+    .title-block h1 {
+      font-size: 22px;
+      font-weight: 900;
+      color: #0F05F1;
+      letter-spacing: -0.5px;
+    }
+    .title-block p {
+      font-size: 12px;
+      color: #001E61;
+      opacity: 0.6;
+      margin-top: 3px;
+      font-weight: 300;
+      letter-spacing: 0.3px;
+    }
+    .month-counter { text-align: right; }
+    .month-counter .label {
+      font-size: 11px;
+      color: #001E61;
+      opacity: 0.6;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .month-counter .value {
+      font-size: 30px;
+      font-weight: 900;
+      color: #0F05F1;
+      line-height: 1;
+      margin-top: 3px;
+      letter-spacing: -1px;
+    }
+
+    /* ===== TABS ===== */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: #fff;
+      padding: 4px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+    .tab {
+      flex: 1;
+      padding: 12px;
+      background: transparent;
+      border: none;
+      border-radius: 999px;
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #001E61;
+      cursor: pointer;
+      opacity: 0.55;
+      letter-spacing: 0.3px;
+      transition: all 0.15s;
+    }
+    .tab:hover { background: #D6F2FB; color: #001E61; opacity: 1; }
+    .tab.active { background: #0F05F1; color: #fff; opacity: 1; }
+    .tab.active:hover { background: #0A03C2; color: #fff; }
+
+    /* ===== PANEL ===== */
+    .panel { background: #fff; border-radius: 14px; padding: 24px; }
+    .panel.hidden { display: none; }
+
+    .step-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0F05F1;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-label::before {
+      content: '';
+      display: inline-block;
+      width: 18px;
+      height: 2px;
+      background: #0F05F1;
+    }
+
+    /* ===== GROUPS ===== */
+    .groups {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .group-card {
+      padding: 22px 10px;
+      background: #F4F6FB;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.15s, border-color 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 92px;
+      font-family: 'Lato', sans-serif;
+    }
+    .group-card:hover { background: #D6F2FB; border-color: #23CCF3; }
+    .group-card.selected { background: #0F05F1; border-color: #0F05F1; }
+    .group-card.selected:hover { background: #0A03C2; border-color: #0A03C2; }
+    .group-card .name {
+      display: block;
+      font-size: 18px;
+      font-weight: 900;
+      color: #001E61;
+      letter-spacing: -0.3px;
+      line-height: 1.05;
+    }
+    .group-card.selected .name { color: #fff; }
+    .group-card .time-label {
+      display: none;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 8px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+    .group-card.selected .time-label { display: block; }
+
+    /* ===== TIME EDITOR ===== */
+    .time-editor {
+      background: #F4F6FB;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 20px;
+    }
+    .time-editor.empty {
+      text-align: center;
+      color: #001E61;
+      opacity: 0.5;
+      font-size: 13px;
+      padding: 24px;
+      font-weight: 300;
+      font-style: italic;
+    }
+    .time-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(0, 30, 97, 0.06);
+    }
+    .time-row:last-child { border-bottom: none; }
+    .time-name {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      color: #001E61;
+    }
+    .time-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: #fff;
+      border: 1px solid #D7D2CB;
+      font-family: 'Lato', sans-serif;
+      font-weight: 700;
+      color: #0F05F1;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .time-btn:hover { background: #D6F2FB; border-color: #23CCF3; }
+    .time-value {
+      font-size: 14px;
+      font-weight: 700;
+      min-width: 56px;
+      text-align: center;
+      color: #0F05F1;
+    }
+    .time-unit {
+      font-size: 10px;
+      color: #001E61;
+      opacity: 0.55;
+      font-weight: 400;
+    }
+
+    /* ===== TOTAL ===== */
+    .total-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 18px;
+      background: #0F05F1;
+      color: #fff;
+      border-radius: 10px;
+      margin-bottom: 14px;
+    }
+    .total-bar .total-label {
+      font-size: 11px;
+      opacity: 0.85;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      font-weight: 400;
+    }
+    .total-bar .total-value {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    /* ===== NOTES ===== */
+    .notes {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #D7D2CB;
+      border-radius: 10px;
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      color: #001E61;
+      background: #fff;
+      resize: vertical;
+      min-height: 56px;
+      margin-bottom: 14px;
+      font-weight: 300;
+      font-style: italic;
+    }
+    .notes:focus { outline: none; border-color: #0F05F1; }
+    .notes::placeholder { color: #001E61; opacity: 0.4; font-style: italic; }
+
+    /* ===== SAVE BUTTON ===== */
+    .save-btn {
+      width: 100%;
+      padding: 15px;
+      background: #0F05F1;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Lato', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: background 0.15s;
+    }
+    .save-btn:hover:not(:disabled) { background: #0A03C2; }
+    .save-btn:disabled { background: #D7D2CB; cursor: not-allowed; color: #fff; }
+
+    /* ===== HISTORY STATS ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #F4F6FB;
+      padding: 14px 12px;
+      border-radius: 10px;
+      border-left: 3px solid;
+    }
+    .stat-card .stat-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #001E61;
+      opacity: 0.6;
+      font-weight: 700;
+    }
+    .stat-card .stat-value {
+      font-size: 24px;
+      font-weight: 900;
+      margin-top: 4px;
+      color: #001E61;
+      line-height: 1;
+      letter-spacing: -0.5px;
+    }
+    .stat-card .stat-sub {
+      font-size: 10px;
+      opacity: 0.5;
+      font-weight: 300;
+      margin-top: 4px;
+      color: #001E61;
+    }
+
+    /* ===== MONTH GRID ===== */
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+    .day-cell {
+      aspect-ratio: 1;
+      border-radius: 5px;
+      background: #F1EFE8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #001E61;
+      opacity: 0.5;
+      font-weight: 700;
+    }
+    .day-cell.has-workout { background: #0F05F1; color: #fff; opacity: 1; }
+    .day-cell.today { border: 2px solid #23CCF3; }
+    .day-cell.future { opacity: 0.2; }
+
+    /* ===== HISTORY LIST ===== */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .history-list::-webkit-scrollbar { width: 6px; }
+    .history-list::-webkit-scrollbar-track { background: transparent; }
+    .history-list::-webkit-scrollbar-thumb { background: #D7D2CB; border-radius: 3px; }
+
+    .history-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #001E61;
+      opacity: 0.5;
+      font-size: 13px;
+      font-weight: 300;
+      font-style: italic;
+    }
+    .history-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      background: #F4F6FB;
+      border-radius: 10px;
+    }
+    .history-item .date-badge {
+      width: 48px;
+      text-align: center;
+      padding: 7px 4px;
+      background: #0F05F1;
+      color: #fff;
+      border-radius: 7px;
+    }
+    .history-item .date-badge .day {
+      display: block;
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .history-item .date-badge .month {
+      display: block;
+      font-size: 9px;
+      opacity: 0.85;
+      text-transform: uppercase;
+      margin-top: 3px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .history-item .info { min-width: 0; }
+    .history-item .groups-list {
+      font-size: 13px;
+      font-weight: 700;
+      color: #001E61;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .history-item .notes-text {
+      font-size: 11px;
+      color: #001E61;
+      opacity: 0.55;
+      margin-top: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 300;
+      font-style: italic;
+    }
+    .history-item .item-time {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0F05F1;
+    }
+    .history-item .delete-btn {
+      width: 30px;
+      height: 30px;
+      border: none;
+      background: transparent;
+      color: #001E61;
+      opacity: 0.4;
+      cursor: pointer;
+      font-size: 20px;
+      border-radius: 6px;
+      transition: all 0.15s;
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+    }
+    .history-item .delete-btn:hover {
+      background: #FCEBEB;
+      color: #A32D2D;
+      opacity: 1;
+    }
+
+    /* ===== EXPORT BAR ===== */
+    .export-bar {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .export-btn {
+      flex: 1;
+      padding: 10px;
+      background: #fff;
+      color: #0F05F1;
+      border: 1px solid #0F05F1;
+      border-radius: 8px;
+      font-family: 'Lato', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      transition: all 0.15s;
+    }
+    .export-btn:hover { background: #0F05F1; color: #fff; }
+    .export-btn.danger { color: #A32D2D; border-color: #A32D2D; }
+    .export-btn.danger:hover { background: #A32D2D; color: #fff; }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0F05F1;
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 100;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 16px rgba(15, 5, 241, 0.25);
+    }
+    .toast.show { opacity: 1; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 10px;
+      color: #001E61;
+      opacity: 0.4;
+      font-weight: 300;
+      letter-spacing: 0.5px;
+    }
+    .footer strong { font-weight: 700; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      body { padding: 12px 8px; }
+      .container { padding: 18px; }
+      .groups { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .title-block h1 { font-size: 18px; }
+      .month-counter .value { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast">Treino salvo</div>
+
+  <div class="container">
+    <!-- HEADER -->
+    <header class="header">
+      <div class="brand">
+        <!-- Substitua o src abaixo pelo caminho da sua foto (ex: 'minha-foto.jpg') -->
+        <img
+          class="avatar"
+          src="data:image/jpeg;base64,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"
+          alt="Foto do Alex"
+          onerror="this.outerHTML='<div class=\'avatar-fallback\'>A</div>'"
+        />
+        <div class="title-block">
+          <h1>Diário de Treino Alex</h1>
+          <p>Powered by Icehot</p>
+        </div>
+      </div>
+      <div class="month-counter">
+        <div class="label">No mês</div>
+        <div class="value" id="month-count">0</div>
+      </div>
+    </header>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" data-tab="new">Novo treino</button>
+      <button class="tab" data-tab="history">Histórico</button>
+    </div>
+
+    <!-- PANEL: NOVO TREINO -->
+    <div class="panel" id="panel-new">
+      <p class="step-label">Selecione os grupos treinados</p>
+      <div class="groups" id="groups"></div>
+
+      <p class="step-label">Tempo por exercício</p>
+      <div class="time-editor empty" id="time-editor">
+        Selecione ao menos um grupo acima
+      </div>
+
+      <div class="total-bar">
+        <span class="total-label">Tempo total</span>
+        <span class="total-value" id="total-time">0 min</span>
+      </div>
+
+      <textarea
+        class="notes"
+        id="notes"
+        placeholder="Observações: como se sentiu, cargas, intensidade..."
+      ></textarea>
+
+      <button class="save-btn" id="save-btn" disabled>Salvar treino</button>
+    </div>
+
+    <!-- PANEL: HISTÓRICO -->
+    <div class="panel hidden" id="panel-history">
+      <div class="stats-grid">
+        <div class="stat-card" style="border-color: #0F05F1;">
+          <div class="stat-label">No mês</div>
+          <div class="stat-value" id="s-month">0</div>
+          <div class="stat-sub">treinos</div>
+        </div>
+        <div class="stat-card" style="border-color: #23CCF3;">
+          <div class="stat-label">Tempo</div>
+          <div class="stat-value" id="s-time">0h</div>
+          <div class="stat-sub">no mês</div>
+        </div>
+        <div class="stat-card" style="border-color: #B150C5;">
+          <div class="stat-label">Sequência</div>
+          <div class="stat-value" id="s-streak">0</div>
+          <div class="stat-sub">dias seguidos</div>
+        </div>
+        <div class="stat-card" style="border-color: #FFDA27;">
+          <div class="stat-label">Favorito</div>
+          <div class="stat-value" id="s-fav" style="font-size: 14px; font-weight: 700;">—</div>
+          <div class="stat-sub">grupo mais treinado</div>
+        </div>
+      </div>
+
+      <p class="step-label">Mapa do mês</p>
+      <div class="month-grid" id="month-grid"></div>
+
+      <p class="step-label" style="margin-top: 24px;">Treinos registrados</p>
+      <div class="history-list" id="history">
+        <div class="history-empty">
+          Nenhum treino registrado ainda.<br />
+          Comece pela aba "Novo treino"!
+        </div>
+      </div>
+
+      <div class="export-bar">
+        <button class="export-btn" id="export-btn">Exportar JSON</button>
+        <button class="export-btn" id="import-btn">Importar JSON</button>
+        <button class="export-btn danger" id="clear-btn">Limpar tudo</button>
+      </div>
+      <input type="file" id="import-file" accept=".json" style="display:none" />
+    </div>
+
+    <div class="footer">DIÁRIO DE TREINO ALEX · <strong>ICEHOT</strong></div>
+  </div>
+
+  <script>
+    /* ============================================================
+       DIÁRIO DE TREINO — Persistência via localStorage
+       Os dados ficam salvos no navegador. Para backup ou migrar
+       para outro dispositivo, use "Exportar JSON".
+       ============================================================ */
+    (function () {
+      const GROUPS = [
+        { id: 'peito', name: 'Peito' },
+        { id: 'costas', name: 'Costas' },
+        { id: 'ombro', name: 'Ombro' },
+        { id: 'biceps', name: 'Bíceps' },
+        { id: 'triceps', name: 'Tríceps' },
+        { id: 'pernas', name: 'Pernas' },
+        { id: 'gluteos', name: 'Glúteos' },
+        { id: 'abdomen', name: 'Abdômen' },
+        { id: 'cardio', name: 'Cardio' }
+      ];
+      const MONTHS = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+      const STORE_KEY = 'icehot:workouts';
+
+      let selected = {};
+      let workouts = [];
+
+      // -------- Persistência --------
+      function load() {
+        try {
+          const raw = localStorage.getItem(STORE_KEY);
+          if (raw) workouts = JSON.parse(raw);
+        } catch (e) {
+          console.error('Erro ao carregar histórico:', e);
+          workouts = [];
+        }
+        renderAll();
+      }
+
+      function save() {
+        try {
+          localStorage.setItem(STORE_KEY, JSON.stringify(workouts));
+        } catch (e) {
+          console.error('Erro ao salvar:', e);
+          toast('Erro ao salvar!');
+        }
+      }
+
+      // -------- Render dos grupos --------
+      function renderGroups() {
+        const c = document.getElementById('groups');
+        c.innerHTML = GROUPS.map(g => `
+          <button class="group-card ${selected[g.id] != null ? 'selected' : ''}" data-id="${g.id}">
+            <span class="name">${g.name}</span>
+            <span class="time-label">${selected[g.id] || 0} MIN</span>
+          </button>
+        `).join('');
+        c.querySelectorAll('.group-card').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            if (selected[id] != null) delete selected[id];
+            else selected[id] = 15;
+            renderGroups();
+            renderTimeEditor();
+            updateTotal();
+          });
+        });
+      }
+
+      // -------- Editor de tempo --------
+      function renderTimeEditor() {
+        const c = document.getElementById('time-editor');
+        const ids = Object.keys(selected);
+        if (ids.length === 0) {
+          c.className = 'time-editor empty';
+          c.innerHTML = 'Selecione ao menos um grupo acima';
+          return;
+        }
+        c.className = 'time-editor';
+        c.innerHTML = ids.map(id => {
+          const g = GROUPS.find(x => x.id === id);
+          return `
+            <div class="time-row">
+              <span class="time-name">${g.name}</span>
+              <button class="time-btn" data-act="dec" data-id="${id}">−</button>
+              <span class="time-value"><span id="t-${id}">${selected[id]}</span> <span class="time-unit">MIN</span></span>
+              <button class="time-btn" data-act="inc" data-id="${id}">+</button>
+            </div>
+          `;
+        }).join('');
+        c.querySelectorAll('.time-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.dataset.id;
+            const delta = btn.dataset.act === 'inc' ? 5 : -5;
+            selected[id] = Math.max(5, (selected[id] || 0) + delta);
+            document.getElementById('t-' + id).textContent = selected[id];
+            const grpEl = document.querySelector(`.group-card[data-id="${id}"] .time-label`);
+            if (grpEl) grpEl.textContent = selected[id] + ' MIN';
+            updateTotal();
+          });
+        });
+      }
+
+      function updateTotal() {
+        const total = Object.values(selected).reduce((a, b) => a + b, 0);
+        document.getElementById('total-time').textContent = total + ' min';
+        document.getElementById('save-btn').disabled = total === 0;
+      }
+
+      // -------- Toast --------
+      function toast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2200);
+      }
+
+      // -------- Salvar treino --------
+      function saveWorkout() {
+        const total = Object.values(selected).reduce((a, b) => a + b, 0);
+        if (total === 0) return;
+        const w = {
+          id: Date.now(),
+          date: new Date().toISOString(),
+          groups: { ...selected },
+          notes: document.getElementById('notes').value.trim(),
+          total: total
+        };
+        workouts.unshift(w);
+        save();
+        selected = {};
+        document.getElementById('notes').value = '';
+        renderAll();
+        toast('Treino salvo ✓');
+      }
+
+      function deleteWorkout(id) {
+        if (!confirm('Excluir este treino?')) return;
+        workouts = workouts.filter(w => w.id !== id);
+        save();
+        renderAll();
+      }
+
+      // -------- Histórico --------
+      function renderHistory() {
+        const c = document.getElementById('history');
+        if (workouts.length === 0) {
+          c.innerHTML = `<div class="history-empty">
+            Nenhum treino registrado ainda.<br />
+            Comece pela aba "Novo treino"!
+          </div>`;
+          return;
+        }
+        c.innerHTML = workouts.map(w => {
+          const d = new Date(w.date);
+          const groupNames = Object.keys(w.groups)
+            .map(id => GROUPS.find(g => g.id === id)?.name || id)
+            .join(' · ');
+          return `
+            <div class="history-item">
+              <div class="date-badge">
+                <span class="day">${d.getDate()}</span>
+                <span class="month">${MONTHS[d.getMonth()]}</span>
+              </div>
+              <div class="info">
+                <div class="groups-list">${groupNames}</div>
+                <div class="notes-text">${w.notes || 'Sem observações'}</div>
+              </div>
+              <div class="item-time">${w.total} min</div>
+              <button class="delete-btn" data-id="${w.id}" aria-label="Excluir">×</button>
+            </div>
+          `;
+        }).join('');
+        c.querySelectorAll('.delete-btn').forEach(b => {
+          b.addEventListener('click', () => deleteWorkout(parseInt(b.dataset.id)));
+        });
+      }
+
+      // -------- Stats --------
+      function renderStats() {
+        const now = new Date();
+        const monthWorkouts = workouts.filter(w => {
+          const d = new Date(w.date);
+          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        });
+
+        document.getElementById('month-count').textContent = monthWorkouts.length;
+        document.getElementById('s-month').textContent = monthWorkouts.length;
+
+        const totalMin = monthWorkouts.reduce((a, w) => a + w.total, 0);
+        const h = Math.floor(totalMin / 60);
+        const m = totalMin % 60;
+        document.getElementById('s-time').textContent = h + 'h' + (m > 0 ? ' ' + m + 'm' : '');
+
+        // Sequência de dias consecutivos
+        const dates = new Set(workouts.map(w => new Date(w.date).toDateString()));
+        let streak = 0;
+        let d = new Date();
+        while (dates.has(d.toDateString())) {
+          streak++;
+          d.setDate(d.getDate() - 1);
+        }
+        document.getElementById('s-streak').textContent = streak;
+
+        // Grupo favorito no mês
+        const counts = {};
+        monthWorkouts.forEach(w => {
+          Object.keys(w.groups).forEach(id => counts[id] = (counts[id] || 0) + 1);
+        });
+        const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+        document.getElementById('s-fav').textContent = top
+          ? (GROUPS.find(g => g.id === top[0])?.name || '—')
+          : '—';
+      }
+
+      // -------- Calendário do mês --------
+      function renderMonthGrid() {
+        const c = document.getElementById('month-grid');
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = now.getDate();
+        const workoutDays = new Set(
+          workouts
+            .filter(w => {
+              const d = new Date(w.date);
+              return d.getMonth() === month && d.getFullYear() === year;
+            })
+            .map(w => new Date(w.date).getDate())
+        );
+
+        let html = '';
+        for (let i = 1; i <= daysInMonth; i++) {
+          let cls = 'day-cell';
+          if (workoutDays.has(i)) cls += ' has-workout';
+          if (i === today) cls += ' today';
+          if (i > today) cls += ' future';
+          html += `<div class="${cls}">${i}</div>`;
+        }
+        c.innerHTML = html;
+      }
+
+      function renderAll() {
+        renderGroups();
+        renderTimeEditor();
+        updateTotal();
+        renderHistory();
+        renderStats();
+        renderMonthGrid();
+      }
+
+      // -------- Export / Import / Clear --------
+      function exportJSON() {
+        const blob = new Blob([JSON.stringify(workouts, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const date = new Date().toISOString().split('T')[0];
+        a.href = url;
+        a.download = `diario-treino-alex-${date}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast('Backup exportado ✓');
+      }
+
+      function importJSON(file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (!Array.isArray(data)) throw new Error('Formato inválido');
+            if (!confirm(`Importar ${data.length} treinos? Isso substituirá o histórico atual.`)) return;
+            workouts = data;
+            save();
+            renderAll();
+            toast('Treinos importados ✓');
+          } catch (err) {
+            alert('Arquivo inválido: ' + err.message);
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      function clearAll() {
+        if (!confirm('Tem certeza que deseja apagar TODOS os treinos? Esta ação não pode ser desfeita.')) return;
+        if (!confirm('Sério, isso vai apagar tudo. Confirmar?')) return;
+        workouts = [];
+        save();
+        renderAll();
+        toast('Histórico limpo');
+      }
+
+      // -------- Listeners --------
+      document.querySelectorAll('.tab').forEach(t => {
+        t.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+          t.classList.add('active');
+          const tab = t.dataset.tab;
+          document.getElementById('panel-new').classList.toggle('hidden', tab !== 'new');
+          document.getElementById('panel-history').classList.toggle('hidden', tab !== 'history');
+        });
+      });
+
+      document.getElementById('save-btn').addEventListener('click', saveWorkout);
+      document.getElementById('export-btn').addEventListener('click', exportJSON);
+      document.getElementById('clear-btn').addEventListener('click', clearAll);
+
+      const importBtn = document.getElementById('import-btn');
+      const importFile = document.getElementById('import-file');
+      importBtn.addEventListener('click', () => importFile.click());
+      importFile.addEventListener('change', e => {
+        if (e.target.files[0]) importJSON(e.target.files[0]);
+        e.target.value = '';
+      });
+
+      load();
+    })();
+  </script>
+</body>
+</html>
